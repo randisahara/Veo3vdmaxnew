@@ -94,10 +94,10 @@
     <h1>Prompt generator veo 3 by Vdmax ai studio</h1>
     <form id="promptForm" autocomplete="off">
       <label for="theme">Tema / Scene <span style="color:#d53369">*</span></label>
-      <input id="theme" required placeholder="Contoh: A futuristic city at night" />
+      <input id="theme" required placeholder="Contoh: Kota futuristik di malam hari" />
 
       <label for="visuals">Elemen Visual</label>
-      <input id="visuals" placeholder="Contoh: neon, flying cars, skyscrapers" />
+      <input id="visuals" placeholder="Contoh: neon, mobil terbang, gedung tinggi" />
 
       <label for="mood">Mood / Suasana</label>
       <select id="mood">
@@ -110,10 +110,10 @@
       </select>
 
       <label for="audio">Audio / Musik / Efek</label>
-      <input id="audio" placeholder="Contoh: city sounds, electronic music" />
+      <input id="audio" placeholder="Contoh: suara kota, musik elektronik" />
 
       <label for="actions">Aksi / Gerakan</label>
-      <input id="actions" placeholder="Contoh: cars zooming, people walking" />
+      <input id="actions" placeholder="Contoh: mobil melaju, orang berjalan" />
 
       <label for="dialogue">Dialog <span style="font-weight:400;font-size:0.93em;">(bahasa Indonesia)</span></label>
       <input id="dialogue" placeholder='Contoh: "Ayo kita pergi sekarang!"' />
@@ -123,32 +123,63 @@
     <div id="output" class="output"></div>
     <div class="info">
       <b>Tips:</b> <br>
-      1. Isi kolom minimal Tema/Scene & gunakan bahasa Inggris untuk hasil terbaik kecuali di field Dialog yang bisa pakai bahasa Indonesia.<br>
-      2. Copy hasil di bawah ini dan paste ke prompt input di Veo 3.<br>
-      3. Kolom lain membantu hasil lebih sinematik dan menarik.<br>
+      1. Isi kolom bebas pakai Bahasa Indonesia.<br>
+      2. Output akan otomatis dalam Bahasa Inggris kecuali dialog.<br>
+      3. Copy hasil di bawah ini dan paste ke prompt input di Veo 3.<br>
       4. Untuk dialog, kuatkan dengan awalan "Dialogue in Indonesian:" seperti contoh.
     </div>
   </div>
+
   <script>
-    document.getElementById('generateBtn').onclick = function() {
-      var theme = document.getElementById('theme').value.trim();
-      var visuals = document.getElementById('visuals').value.trim();
-      var mood = document.getElementById('mood').value.trim();
-      var audio = document.getElementById('audio').value.trim();
-      var actions = document.getElementById('actions').value.trim();
-      var dialogue = document.getElementById('dialogue').value.trim();
+    async function translateText(text) {
+      if (!text) return "";
+      try {
+        const response = await fetch("https://libretranslate.de/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            q: text,
+            source: "id",
+            target: "en",
+            format: "text"
+          })
+        });
+        const data = await response.json();
+        return data.translatedText;
+      } catch (err) {
+        console.error("Translation error:", err);
+        return text;
+      }
+    }
+
+    document.getElementById('generateBtn').onclick = async function() {
+      const theme = document.getElementById('theme').value.trim();
+      const visuals = document.getElementById('visuals').value.trim();
+      const mood = document.getElementById('mood').value.trim();
+      const audio = document.getElementById('audio').value.trim();
+      const actions = document.getElementById('actions').value.trim();
+      const dialogue = document.getElementById('dialogue').value.trim();
 
       if (!theme) {
         document.getElementById('output').textContent = 'Kolom Tema/Scene wajib diisi!';
         return;
       }
 
-      let prompt = `Create an 8-second high-definition video using Veo 3 AI.\nScenario: ${theme}.`;
-      if (visuals) prompt += `\nVisual elements: ${visuals}.`;
-      if (mood)    prompt += `\nMood: ${mood}.`;
-      if (actions) prompt += `\nActions: ${actions}.`;
+      document.getElementById('output').textContent = 'Generating and translating...';
+
+      const [themeEn, visualsEn, audioEn, actionsEn] = await Promise.all([
+        translateText(theme),
+        translateText(visuals),
+        translateText(audio),
+        translateText(actions)
+      ]);
+
+      let prompt = `Create an 8-second high-definition video using Veo 3 AI.\nScenario: ${themeEn}.`;
+      if (visualsEn) prompt += `\nVisual elements: ${visualsEn}.`;
+      if (mood) prompt += `\nMood: ${mood}.`;
+      if (actionsEn) prompt += `\nActions: ${actionsEn}.`;
       if (dialogue) prompt += `\nDialogue in Indonesian: "${dialogue}".`;
-      if (audio)   prompt += `\nAudio/music/effects: ${audio}.`;
+      if (audioEn) prompt += `\nAudio/music/effects: ${audioEn}.`;
 
       prompt += `\n\nCinematic, realistic lighting, smooth camera motion, precise lipsync and character animation. Make sure the scene feels immersive and visually stunning.`;
 
