@@ -2,127 +2,144 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Veo 3 Prompt Generator - VDMAX</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #121212;
-      color: #fff;
-      padding: 20px;
-    }
-    h1 {
-      color: #ff4757;
-    }
-    label {
-      display: block;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-    input, textarea, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 5px;
-      border: none;
-      font-size: 16px;
-    }
-    input, textarea {
-      background: #2f2f2f;
-      color: #fff;
-    }
-    button {
-      background: #ff4757;
-      color: white;
-      cursor: pointer;
-      margin-top: 20px;
-      font-weight: bold;
-    }
-    button:hover {
-      background: #e84118;
-    }
-    pre {
-      background: #1e1e1e;
-      padding: 15px;
-      margin-top: 20px;
-      white-space: pre-wrap;
-      border-radius: 5px;
-      font-size: 14px;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
     }
   </style>
 </head>
-<body>
+<body class="bg-slate-900 text-white min-h-screen p-4 sm:p-6 md:p-8 flex flex-col items-center">
 
-  <h1>🎬 Veo 3 Prompt Generator by VDMAX</h1>
+  <div class="w-full max-w-2xl">
+    <h1 class="text-3xl sm:text-4xl font-bold text-red-500 mb-6 sm:mb-8 text-center">🎬 Veo 3 Prompt Generator by VDMAX</h1>
 
-  <label for="theme">Tema / Scene *</label>
-  <input id="theme" placeholder="Contoh: Kakek tua berjalan di tengah hujan"/>
+    <div class="space-y-4">
+      <div>
+        <label for="theme" class="block text-sm font-medium text-slate-300 mb-1">Tema / Scene *</label>
+        <input type="text" id="theme" placeholder="Contoh: Kakek tua berjalan di tengah hujan"
+               class="w-full p-3 bg-slate-800 text-white border border-slate-700 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500 placeholder-slate-500"/>
+      </div>
 
-  <label for="visuals">Visual / Setting</label>
-  <input id="visuals" placeholder="Contoh: desa berkabut, lampu kuning temaram"/>
+      <div>
+        <label for="visuals" class="block text-sm font-medium text-slate-300 mb-1">Visual / Setting</label>
+        <input type="text" id="visuals" placeholder="Contoh: desa berkabut, lampu kuning temaram"
+               class="w-full p-3 bg-slate-800 text-white border border-slate-700 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500 placeholder-slate-500"/>
+      </div>
 
-  <label for="mood">Mood / Suasana</label>
-  <input id="mood" placeholder="Contoh: dramatis, melankolis"/>
+      <div>
+        <label for="mood" class="block text-sm font-medium text-slate-300 mb-1">Mood / Suasana</label>
+        <input type="text" id="mood" placeholder="Contoh: dramatis, melankolis"
+               class="w-full p-3 bg-slate-800 text-white border border-slate-700 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500 placeholder-slate-500"/>
+      </div>
 
-  <label for="audio">Audio / Musik</label>
-  <input id="audio" placeholder="Contoh: piano sedih, efek suara hujan"/>
+      <div>
+        <label for="audio" class="block text-sm font-medium text-slate-300 mb-1">Audio / Musik</label>
+        <input type="text" id="audio" placeholder="Contoh: piano sedih, efek suara hujan"
+               class="w-full p-3 bg-slate-800 text-white border border-slate-700 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500 placeholder-slate-500"/>
+      </div>
 
-  <label for="actions">Aksi / Gerakan</label>
-  <input id="actions" placeholder="Contoh: kakek berjalan pelan, menunduk, memegang payung"/>
+      <div>
+        <label for="actions" class="block text-sm font-medium text-slate-300 mb-1">Aksi / Gerakan</label>
+        <input type="text" id="actions" placeholder="Contoh: kakek berjalan pelan, menunduk, memegang payung"
+               class="w-full p-3 bg-slate-800 text-white border border-slate-700 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500 placeholder-slate-500"/>
+      </div>
 
-  <label for="dialogue">Dialog (opsional, tetap dalam Bahasa Indonesia)</label>
-  <textarea id="dialogue" placeholder="Contoh: 'Aku akan selalu mengingatmu, Nak.'"></textarea>
+      <div>
+        <label for="dialogue" class="block text-sm font-medium text-slate-300 mb-1">Dialog (opsional, tetap dalam Bahasa Indonesia)</label>
+        <textarea id="dialogue" placeholder="Contoh: 'Aku akan selalu mengingatmu, Nak.'" rows="3"
+                  class="w-full p-3 bg-slate-800 text-white border border-slate-700 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500 placeholder-slate-500"></textarea>
+      </div>
 
-  <button id="generateBtn">🎥 Generate Prompt</button>
+      <button id="generateBtn"
+              class="w-full p-3 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 transition duration-150 ease-in-out mt-6">
+        🎥 Generate Prompt
+      </button>
 
-  <pre id="output">Prompt akan muncul di sini...</pre>
+      <div>
+        <label for="output" class="block text-sm font-medium text-slate-300 mb-1 mt-6">Generated Prompt:</label>
+        <pre id="output"
+             class="w-full p-4 bg-slate-800 border border-slate-700 rounded-lg shadow-sm text-sm whitespace-pre-wrap min-h-[100px] text-slate-300">Prompt akan muncul di sini...</pre>
+      </div>
+    </div>
+    
+    <footer class="text-center text-slate-500 mt-8 text-sm">
+        Powered by VDMAX & Google Translate API (Public)
+    </footer>
+  </div>
 
   <script>
+    // Function to translate text from Indonesian to English using Google Translate public API
     async function translateText(text) {
-      if (!text) return '';
+      if (!text || text.trim() === '') return ''; // Return empty if input is empty or just whitespace
+      
+      const sourceLang = 'id'; // Bahasa Indonesia
+      const targetLang = 'en'; // Bahasa Inggris
+      // URL untuk API publik Google Translate
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // timeout 5 detik
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5-second timeout
 
-        const response = await fetch("https://libretranslate.de/translate", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          signal: controller.signal,
-          body: JSON.stringify({
-            q: text,
-            source: "id",
-            target: "en",
-            format: "text"
-          })
+        const response = await fetch(url, {
+          signal: controller.signal, // Pass the abort signal to the fetch request
         });
-        clearTimeout(timeoutId);
+
+        clearTimeout(timeoutId); // Clear the timeout if the fetch completes in time
+
+        if (!response.ok) {
+          console.warn(`⚠️ Translation API error: ${response.status} ${response.statusText}`);
+          return text; // Fallback to original text
+        }
+
         const data = await response.json();
-        return data.translatedText || text;
+        
+        // Respons dari API ini adalah array bersarang.
+        // Teks yang diterjemahkan biasanya ada di data[0][0][0]
+        if (data && data[0] && data[0][0] && data[0][0][0]) {
+          return data[0][0][0];
+        } else {
+          console.warn("⚠️ Could not parse translated text from API response. Using original text.");
+          return text; // Fallback if parsing fails
+        }
+
       } catch (error) {
-        console.warn("⚠️ Gagal translate, pakai teks asli:", error);
-        return text;
+        if (error.name === 'AbortError') {
+          console.warn("⚠️ Translation request timed out. Using original text.");
+        } else {
+          console.warn("⚠️ Failed to translate, using original text:", error);
+        }
+        return text; // Fallback to original text in case of any error
       }
     }
 
+    // Event listener for the generate button
     document.getElementById('generateBtn').onclick = async function () {
+      // Get values from input fields
       const theme = document.getElementById('theme').value.trim();
       const visuals = document.getElementById('visuals').value.trim();
       const mood = document.getElementById('mood').value.trim();
       const audio = document.getElementById('audio').value.trim();
       const actions = document.getElementById('actions').value.trim();
-      const dialogue = document.getElementById('dialogue').value.trim();
+      const dialogue = document.getElementById('dialogue').value.trim(); // Dialogue remains in Indonesian
 
       const outputEl = document.getElementById('output');
       outputEl.textContent = "⏳ Generating prompt... please wait...";
+      outputEl.classList.remove('text-red-400'); // Remove error color if present
 
+      // Theme is mandatory
       if (!theme) {
         outputEl.textContent = '⚠️ Kolom Tema/Scene wajib diisi!';
+        outputEl.classList.add('text-red-400');
         return;
       }
 
       try {
+        // Translate all relevant fields (except dialogue) to English
+        // Promise.all allows all translations to happen concurrently
         const [
           translatedTheme,
           translatedVisuals,
@@ -130,18 +147,23 @@
           translatedAudio,
           translatedActions
         ] = await Promise.all([
-          translateText(theme),
-          translateText(visuals),
-          translateText(mood),
-          translateText(audio),
-          translateText(actions)
+          translateText(theme),    // Theme will be translated
+          translateText(visuals),  // Visuals will be translated
+          translateText(mood),     // Mood will be translated
+          translateText(audio),    // Audio will be translated
+          translateText(actions)   // Actions will be translated
         ]);
 
+        // Construct the prompt string
+        // The main structure of the prompt is in English.
+        // Translated fields are inserted. Dialogue is inserted in its original Indonesian.
         let prompt = `Create an 8-second high-definition video using Veo 3 AI.\nScenario: ${translatedTheme}.`;
+        
         if (visuals) prompt += `\nVisual elements: ${translatedVisuals}.`;
         if (mood)    prompt += `\nMood: ${translatedMood}.`;
         if (actions) prompt += `\nActions: ${translatedActions}.`;
-        if (dialogue) prompt += `\nDialogue in Indonesian: "${dialogue}".`;
+        // Dialogue is explicitly kept in Indonesian, and marked as such in the prompt
+        if (dialogue) prompt += `\nDialogue (in Indonesian): "${dialogue}".`; 
         if (audio)   prompt += `\nAudio/music/effects: ${translatedAudio}.`;
 
         prompt += `\n\nCinematic, realistic lighting, smooth camera motion, precise lipsync and character animation. Make sure the scene feels immersive and visually stunning.`;
@@ -149,7 +171,9 @@
         outputEl.textContent = prompt;
 
       } catch (err) {
+        // Catch any unexpected errors during the process
         outputEl.textContent = '❌ Gagal membuat prompt. Cek koneksi internet lalu coba lagi.';
+        outputEl.classList.add('text-red-400');
         console.error("Prompt generation failed:", err);
       }
     };
