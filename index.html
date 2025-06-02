@@ -9,6 +9,14 @@
     body {
       font-family: 'Inter', 'Segoe UI', sans-serif;
     }
+    /* Untuk menyembunyikan scrollbar di textarea output, tapi tetap bisa di-scroll */
+    #output::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
+    #output {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
   </style>
 </head>
 <body class="bg-slate-900 text-white min-h-screen p-4 sm:p-6 md:p-8 flex flex-col items-center">
@@ -58,14 +66,37 @@
         🎥 Generate Prompt
       </button>
 
-      <div>
-        <label for="output" class="block text-sm font-medium text-slate-300 mb-1 mt-6">Generated Prompt:</label>
+      <div class="mt-6">
+        <div class="flex justify-between items-center mb-1">
+            <label for="output" class="block text-sm font-medium text-slate-300">Generated Prompt:</label>
+            <button id="copyBtn" title="Salin Prompt" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white text-xs font-medium rounded-md shadow-sm transition duration-150 ease-in-out">
+                Salin
+            </button>
+        </div>
         <pre id="output"
-             class="w-full p-4 bg-slate-800 border border-slate-700 rounded-lg shadow-sm text-sm whitespace-pre-wrap min-h-[100px] text-slate-300">Prompt akan muncul di sini...</pre>
+             class="w-full p-4 bg-slate-800 border border-slate-700 rounded-lg shadow-sm text-sm whitespace-pre-wrap min-h-[100px] text-slate-300 overflow-auto">Prompt akan muncul di sini...</pre>
+      </div>
+      
+      <button id="resetBtn" class="w-full p-3 bg-slate-600 hover:bg-slate-700 text-white font-semibold rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-opacity-50 transition duration-150 ease-in-out mt-4">
+        🔄 Reset Form
+      </button>
+
+      <div class="text-center mt-6">
+        <a href="http://lynk.id/vdmax/yz199q900lrx/checkout" target="_blank" rel="noopener noreferrer"
+           class="text-red-400 hover:text-red-300 font-medium underline transition duration-150 ease-in-out">
+          Versi premium disini
+        </a>
+        <p class="text-slate-400 text-sm mt-2">
+          Gunakan voucher: <strong class="text-yellow-400">VEO32025</strong> untuk mendapatkan diskon di versi premium.
+        </p>
       </div>
     </div>
     
-    <footer class="text-center text-slate-500 mt-8 text-sm">
+    <div id="copyNotification" class="fixed bottom-5 right-5 bg-green-500 text-white py-2 px-4 rounded-lg shadow-md transition-opacity duration-300 opacity-0 z-50">
+        Prompt disalin!
+    </div>
+
+    <footer class="text-center text-slate-500 mt-8 mb-4 text-sm">
         Powered by VDMAX & Google Translate API (Public)
     </footer>
   </div>
@@ -73,64 +104,64 @@
   <script>
     // Function to translate text from Indonesian to English using Google Translate public API
     async function translateText(text) {
-      if (!text || text.trim() === '') return ''; // Return empty if input is empty or just whitespace
+      if (!text || text.trim() === '') return '';
       
-      const sourceLang = 'id'; // Bahasa Indonesia
-      const targetLang = 'en'; // Bahasa Inggris
-      // URL untuk API publik Google Translate
+      const sourceLang = 'id'; 
+      const targetLang = 'en'; 
       const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
 
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5-second timeout
+        const timeoutId = setTimeout(() => controller.abort(), 5000); 
 
-        const response = await fetch(url, {
-          signal: controller.signal, // Pass the abort signal to the fetch request
-        });
-
-        clearTimeout(timeoutId); // Clear the timeout if the fetch completes in time
+        const response = await fetch(url, { signal: controller.signal });
+        clearTimeout(timeoutId); 
 
         if (!response.ok) {
           console.warn(`⚠️ Translation API error: ${response.status} ${response.statusText}`);
-          return text; // Fallback to original text
+          return text; 
         }
-
         const data = await response.json();
-        
-        // Respons dari API ini adalah array bersarang.
-        // Teks yang diterjemahkan biasanya ada di data[0][0][0]
         if (data && data[0] && data[0][0] && data[0][0][0]) {
           return data[0][0][0];
         } else {
           console.warn("⚠️ Could not parse translated text from API response. Using original text.");
-          return text; // Fallback if parsing fails
+          return text;
         }
-
       } catch (error) {
         if (error.name === 'AbortError') {
           console.warn("⚠️ Translation request timed out. Using original text.");
         } else {
           console.warn("⚠️ Failed to translate, using original text:", error);
         }
-        return text; // Fallback to original text in case of any error
+        return text;
       }
     }
 
+    const themeInput = document.getElementById('theme');
+    const visualsInput = document.getElementById('visuals');
+    const moodInput = document.getElementById('mood');
+    const audioInput = document.getElementById('audio');
+    const actionsInput = document.getElementById('actions');
+    const dialogueInput = document.getElementById('dialogue');
+    const outputEl = document.getElementById('output');
+    const generateBtn = document.getElementById('generateBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const copyNotification = document.getElementById('copyNotification');
+
     // Event listener for the generate button
-    document.getElementById('generateBtn').onclick = async function () {
-      // Get values from input fields
-      const theme = document.getElementById('theme').value.trim();
-      const visuals = document.getElementById('visuals').value.trim();
-      const mood = document.getElementById('mood').value.trim();
-      const audio = document.getElementById('audio').value.trim();
-      const actions = document.getElementById('actions').value.trim();
-      const dialogue = document.getElementById('dialogue').value.trim(); // Dialogue remains in Indonesian
+    generateBtn.onclick = async function () {
+      const theme = themeInput.value.trim();
+      const visuals = visualsInput.value.trim();
+      const mood = moodInput.value.trim();
+      const audio = audioInput.value.trim();
+      const actions = actionsInput.value.trim();
+      const dialogue = dialogueInput.value.trim(); 
 
-      const outputEl = document.getElementById('output');
       outputEl.textContent = "⏳ Generating prompt... please wait...";
-      outputEl.classList.remove('text-red-400'); // Remove error color if present
+      outputEl.classList.remove('text-red-400'); 
 
-      // Theme is mandatory
       if (!theme) {
         outputEl.textContent = '⚠️ Kolom Tema/Scene wajib diisi!';
         outputEl.classList.add('text-red-400');
@@ -138,8 +169,6 @@
       }
 
       try {
-        // Translate all relevant fields (except dialogue) to English
-        // Promise.all allows all translations to happen concurrently
         const [
           translatedTheme,
           translatedVisuals,
@@ -147,36 +176,71 @@
           translatedAudio,
           translatedActions
         ] = await Promise.all([
-          translateText(theme),    // Theme will be translated
-          translateText(visuals),  // Visuals will be translated
-          translateText(mood),     // Mood will be translated
-          translateText(audio),    // Audio will be translated
-          translateText(actions)   // Actions will be translated
+          translateText(theme),   
+          translateText(visuals),  
+          translateText(mood),     
+          translateText(audio),    
+          translateText(actions)   
         ]);
 
-        // Construct the prompt string
-        // The main structure of the prompt is in English.
-        // Translated fields are inserted. Dialogue is inserted in its original Indonesian.
         let prompt = `Create an 8-second high-definition video using Veo 3 AI.\nScenario: ${translatedTheme}.`;
-        
         if (visuals) prompt += `\nVisual elements: ${translatedVisuals}.`;
         if (mood)    prompt += `\nMood: ${translatedMood}.`;
         if (actions) prompt += `\nActions: ${translatedActions}.`;
-        // Dialogue is explicitly kept in Indonesian, and marked as such in the prompt
         if (dialogue) prompt += `\nDialogue (in Indonesian): "${dialogue}".`; 
         if (audio)   prompt += `\nAudio/music/effects: ${translatedAudio}.`;
-
         prompt += `\n\nCinematic, realistic lighting, smooth camera motion, precise lipsync and character animation. Make sure the scene feels immersive and visually stunning.`;
-
         outputEl.textContent = prompt;
-
       } catch (err) {
-        // Catch any unexpected errors during the process
         outputEl.textContent = '❌ Gagal membuat prompt. Cek koneksi internet lalu coba lagi.';
         outputEl.classList.add('text-red-400');
         console.error("Prompt generation failed:", err);
       }
     };
+
+    // Event listener for the copy button
+    copyBtn.onclick = function() {
+        const textToCopy = outputEl.textContent;
+        if (textToCopy && textToCopy !== "Prompt akan muncul di sini..." && textToCopy !== "⏳ Generating prompt... please wait..." && !textToCopy.startsWith("⚠️") && !textToCopy.startsWith("❌")) {
+            // Menggunakan document.execCommand('copy') sebagai fallback jika navigator.clipboard tidak tersedia atau diblokir di iframe
+            try {
+                const textArea = document.createElement("textarea");
+                textArea.value = textToCopy;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                // Tampilkan notifikasi
+                copyNotification.classList.remove('opacity-0');
+                copyNotification.classList.add('opacity-100');
+                setTimeout(() => {
+                    copyNotification.classList.remove('opacity-100');
+                    copyNotification.classList.add('opacity-0');
+                }, 2000);
+
+            } catch (err) {
+                console.error('Gagal menyalin teks: ', err);
+                outputEl.textContent = '❌ Gagal menyalin prompt.';
+                outputEl.classList.add('text-red-400');
+            }
+        } else if (textToCopy === "Prompt akan muncul di sini..." || textToCopy === "⏳ Generating prompt... please wait..." || textToCopy.startsWith("⚠️") || textToCopy.startsWith("❌")) {
+            // Tidak melakukan apa-apa jika output masih placeholder atau pesan error/loading
+        }
+    };
+
+    // Event listener for the reset button
+    resetBtn.onclick = function() {
+        themeInput.value = '';
+        visualsInput.value = '';
+        moodInput.value = '';
+        audioInput.value = '';
+        actionsInput.value = '';
+        dialogueInput.value = '';
+        outputEl.textContent = 'Prompt akan muncul di sini...';
+        outputEl.classList.remove('text-red-400');
+    };
+
   </script>
 
 </body>
