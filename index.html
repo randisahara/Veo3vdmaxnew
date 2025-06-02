@@ -115,18 +115,18 @@
       <label for="actions">Aksi / Gerakan</label>
       <input id="actions" placeholder="Contoh: cars zooming, people walking" />
 
-      <label for="dialogue">Dialog <span style="font-weight:400;font-size:0.93em;">(bahasa Inggris)</span></label>
-      <input id="dialogue" placeholder='Contoh: "The future is now!"' />
+      <label for="dialogue">Dialog <span style="font-weight:400;font-size:0.93em;">(bahasa Indonesia)</span></label>
+      <input id="dialogue" placeholder='Contoh: "Ayo kita pergi sekarang!"' />
 
       <button type="button" id="generateBtn">Buat Prompt</button>
     </form>
     <div id="output" class="output"></div>
     <div class="info">
       <b>Tips:</b> <br>
-      1. Isi kolom minimal Tema/Scene & gunakan bahasa Inggris untuk hasil terbaik.<br>
+      1. Isi kolom minimal Tema/Scene & gunakan bahasa Inggris untuk hasil terbaik kecuali di field Dialog yang bisa pakai bahasa Indonesia.<br>
       2. Copy hasil di bawah ini dan paste ke prompt input di Veo 3.<br>
       3. Kolom lain membantu hasil lebih sinematik dan menarik.<br>
-      4. Untuk dialog, gunakan bahasa Inggris.
+      4. Untuk dialog, kuatkan dengan awalan "Dialogue in Indonesian:" seperti contoh.
     </div>
   </div>
   <script>
@@ -147,7 +147,7 @@
       if (visuals) prompt += `\nVisual elements: ${visuals}.`;
       if (mood)    prompt += `\nMood: ${mood}.`;
       if (actions) prompt += `\nActions: ${actions}.`;
-      if (dialogue) prompt += `\nDialogue: "${dialogue}".`;
+      if (dialogue) prompt += `\nDialogue in Indonesian: "${dialogue}".`;
       if (audio)   prompt += `\nAudio/music/effects: ${audio}.`;
 
       prompt += `\n\nCinematic, realistic lighting, smooth camera motion, precise lipsync and character animation. Make sure the scene feels immersive and visually stunning.`;
