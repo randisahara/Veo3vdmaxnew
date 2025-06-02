@@ -2,63 +2,143 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Veo Prompt Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prompt generator veo 3 by Vdmax ai studio</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: #111;
-      color: #fff;
-      padding: 20px;
+      background: linear-gradient(135deg, #667eea, #d53369);
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    .container {
+      margin: 32px 0;
+      background: #fff;
+      border-radius: 12px;
+      max-width: 440px;
+      width: 100%;
+      padding: 24px 20px 20px 20px;
+      box-shadow: 0 8px 24px #23272f35;
+    }
+    h1 {
+      color: #d53369;
+      text-align: center;
+      margin-bottom: 22px;
+      font-size: 1.35rem;
+      letter-spacing: 0.02em;
+      font-weight: 700;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 2px;
+      color: #4851db;
+      font-size: 1rem;
     }
     input, select, textarea {
       width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      background: #222;
-      border: 1px solid #444;
-      color: #fff;
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #ccd;
+      margin-bottom: 7px;
+      background: #f6f8fc;
+      font-size: 1rem;
+      box-sizing: border-box;
+      font-family: inherit;
     }
+    textarea { min-height: 44px; resize: vertical; }
     button {
-      padding: 10px 20px;
-      background: crimson;
+      margin-top: 10px;
+      width: 100%;
+      background: #d53369;
+      color: #fff;
       border: none;
-      color: white;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 12px 0 12px 0;
       cursor: pointer;
+      transition: background 0.15s;
     }
-    #output {
-      margin-top: 20px;
+    button:hover { background: #b22a57; }
+    .output {
+      padding: 12px;
+      margin-top: 22px;
+      border-radius: 10px;
+      background: #23272f;
+      color: #fff;
+      min-height: 50px;
+      font-size: 1.1rem;
       white-space: pre-wrap;
-      background: #1e1e1e;
-      padding: 20px;
-      border-radius: 8px;
+      font-family: 'JetBrains Mono', 'Consolas', 'monospace', 'Arial';
+      word-break: break-word;
+      box-shadow: 0 0 7px #d5336933;
+    }
+    .info {
+      margin-top: 18px;
+      color: #4851db;
+      background: #f4f7ff;
+      border-left: 3px solid #d53369;
+      padding: 7px 15px;
+      border-radius: 7px;
+      font-size: 0.99rem;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Prompt generator veo 3 by Vdmax ai studio</h1>
+    <form id="promptForm" autocomplete="off">
+      <label for="theme">Tema / Scene <span style="color:#d53369">*</span></label>
+      <input id="theme" required placeholder="Contoh: A futuristic city at night" />
 
-  <h1>🎥 Veo 3 Prompt Generator</h1>
+      <label for="visuals">Elemen Visual</label>
+      <input id="visuals" placeholder="Contoh: neon, flying cars, skyscrapers" />
 
-  <label for="scenario">🧓 Skenario:</label>
-  <input type="text" id="scenario" placeholder="Contoh: Kakek tua sedang duduk di taman"/>
+      <label for="mood">Mood / Suasana</label>
+      <select id="mood">
+        <option value="">-- Pilih Mood --</option>
+        <option value="dramatic">Dramatic</option>
+        <option value="peaceful">Peaceful</option>
+        <option value="energetic">Energetic</option>
+        <option value="cheerful">Cheerful</option>
+        <option value="mysterious">Mysterious</option>
+      </select>
 
-  <label for="visual">🖼️ Elemen Visual:</label>
-  <input type="text" id="visual" placeholder="Contoh: close-up, golden hour lighting, pohon rindang"/>
+      <label for="audio">Audio / Musik / Efek</label>
+      <input id="audio" placeholder="Contoh: city sounds, electronic music" />
 
-  <label for="mood">🎭 Mood / Suasana:</label>
-  <input type="text" id="mood" placeholder="Contoh: dramatic, nostalgic, peaceful"/>
+      <label for="actions">Aksi / Gerakan</label>
+      <input id="actions" placeholder="Contoh: cars zooming, people walking" />
 
-  <button onclick="generatePrompt()">🎬 Generate Prompt</button>
+      <label for="dialogue">Dialog <span style="font-weight:400;font-size:0.93em;">(bahasa Indonesia)</span></label>
+      <input id="dialogue" placeholder='Contoh: "Ayo kita pergi sekarang!"' />
 
-  <div id="output"></div>
+      <button type="button" id="generateBtn">Buat Prompt</button>
+    </form>
+    <div id="output" class="output"></div>
+    <div class="info">
+      <b>Tips:</b> <br>
+      1. Isi kolom minimal Tema/Scene & gunakan bahasa Inggris untuk hasil terbaik kecuali di field Dialog yang bisa pakai bahasa Indonesia.<br>
+      2. Copy hasil di bawah ini dan paste ke prompt input di Veo 3.<br>
+      3. Kolom lain membantu hasil lebih sinematik dan menarik.<br>
+      4. Untuk dialog, kuatkan dengan awalan "Dialogue in Indonesian:" seperti contoh.
+    </div>
+  </div>
 
   <script>
     async function translateText(text) {
-      if (!text) return "";
+      if (!text) return '';
       try {
         const response = await fetch("https://libretranslate.de/translate", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify({
             q: text,
             source: "id",
@@ -66,41 +146,43 @@
             format: "text"
           })
         });
-
         const data = await response.json();
-
-        console.log("Translating:", text, "=>", data.translatedText);
-
-        if (!data.translatedText || data.translatedText.toLowerCase().trim() === text.toLowerCase().trim()) {
-          throw new Error("Terjemahan gagal atau sama dengan input.");
-        }
-
-        return data.translatedText;
-      } catch (err) {
-        console.warn("Gagal translate:", text, "\nError:", err.message);
-        return `[WARNING: Gagal translate] ${text}`;
+        return data.translatedText || text;
+      } catch (error) {
+        console.warn("Gagal translate:", error);
+        return text;
       }
     }
 
-    async function generatePrompt() {
-      const scenarioInput = document.getElementById("scenario").value;
-      const visualInput = document.getElementById("visual").value;
-      const moodInput = document.getElementById("mood").value;
+    document.getElementById('generateBtn').onclick = async function () {
+      const theme = document.getElementById('theme').value.trim();
+      const visuals = document.getElementById('visuals').value.trim();
+      const mood = document.getElementById('mood').value.trim();
+      const audio = document.getElementById('audio').value.trim();
+      const actions = document.getElementById('actions').value.trim();
+      const dialogue = document.getElementById('dialogue').value.trim();
 
-      const scenario = await translateText(scenarioInput);
-      const visual = await translateText(visualInput);
-      const mood = await translateText(moodInput);
+      if (!theme) {
+        document.getElementById('output').textContent = 'Kolom Tema/Scene wajib diisi!';
+        return;
+      }
 
-      const prompt = 
-`Create an 8-second high-definition video using Veo 3 AI.
-Scenario: ${scenario}.
-Visual elements: ${visual}.
-Mood: ${mood}.
-Lighting: cinematic lighting, high contrast.
-Camera: smooth tracking shot.
-Style: realistic.`
+      const translatedTheme = await translateText(theme);
+      const translatedVisuals = await translateText(visuals);
+      const translatedMood = await translateText(mood);
+      const translatedAudio = await translateText(audio);
+      const translatedActions = await translateText(actions);
 
-      document.getElementById("output").innerText = prompt;
+      let prompt = `Create an 8-second high-definition video using Veo 3 AI.\nScenario: ${translatedTheme}.`;
+      if (visuals) prompt += `\nVisual elements: ${translatedVisuals}.`;
+      if (mood)    prompt += `\nMood: ${translatedMood}.`;
+      if (actions) prompt += `\nActions: ${translatedActions}.`;
+      if (dialogue) prompt += `\nDialogue in Indonesian: "${dialogue}".`;
+      if (audio)   prompt += `\nAudio/music/effects: ${translatedAudio}.`;
+
+      prompt += `\n\nCinematic, realistic lighting, smooth camera motion, precise lipsync and character animation. Make sure the scene feels immersive and visually stunning.`;
+
+      document.getElementById('output').textContent = prompt;
     }
   </script>
 </body>
